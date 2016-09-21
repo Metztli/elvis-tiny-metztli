@@ -1,0 +1,33 @@
+diff '--exclude=debian' -ruN x/elvis-tiny-1.4.orig/cmd2.c elvis-tiny-1.4/cmd2.c
+--- x/elvis-tiny-1.4.orig/cmd2.c	1991-08-04 21:20:31.000000000 +0000
++++ elvis-tiny-1.4/cmd2.c	2012-06-29 17:54:18.000000000 +0000
+@@ -591,6 +591,12 @@
+ 		msg("\"%s\" is not a regular file", extra);
+ 		return;
+ 	}
++	if (statb.st_size > 500000)
++	{
++		msg("\"%s\" is too large (>500000 bytes)", extra);
++		close(fd);
++		return;
++	}
+ #endif /* not CRUNCH */
+ 
+ 	/* get blocks from the file, and add them */
+diff '--exclude=debian' -ruN x/elvis-tiny-1.4.orig/tmp.c elvis-tiny-1.4/tmp.c
+--- x/elvis-tiny-1.4.orig/tmp.c	2012-06-29 19:22:09.285371591 +0000
++++ elvis-tiny-1.4/tmp.c	2012-06-29 17:54:18.000000000 +0000
+@@ -133,6 +133,13 @@
+ 				msg("\"%s\" is not a regular file", origname);
+ 				return tmpstart("");
+ 			}
++			/* Can't edit files > 500.000 bytes */
++			if (statb.st_size > 500000)
++			{
++				msg("\"%s\" is too big (>500000 bytes)",
++					origname);
++				return tmpstart("");
++			}
+ 		}
+ 		else
+ 		{

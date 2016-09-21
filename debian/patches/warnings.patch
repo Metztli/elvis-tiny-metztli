@@ -1,0 +1,326 @@
+diff -ruN elvis-tiny-1.4.orig/main.c elvis-tiny-1.4.test2/main.c
+--- elvis-tiny-1.4.orig/main.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/main.c	2012-06-29 22:01:48.651235702 +0000
+@@ -13,6 +13,9 @@
+ #include "config.h"
+ #include <signal.h>
+ #include <setjmp.h>
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
+ #include "vi.h"
+ 
+ extern		trapint(); /* defined below */
+@@ -25,7 +25,7 @@
+ 
+ /*---------------------------------------------------------------------*/
+ 
+-void main(argc, argv)
++int main(argc, argv)
+ 	int	argc;
+ 	char	*argv[];
+ {
+@@ -330,7 +349,7 @@
+ 	refresh();
+ 	endwin();
+ 
+-	exit(0);
++	return(0);
+ 	/*NOTREACHED*/
+ }
+ 
+diff -ruN elvis-tiny-1.4.orig/tio.c elvis-tiny-1.4.test2/tio.c
+--- elvis-tiny-1.4.orig/tio.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/tio.c	2012-06-29 21:59:40.945080102 +0000
+@@ -15,6 +15,9 @@
+ # include <setjmp.h>
+ #endif
+ #include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ #include "vi.h"
+ 
+ 
+@@ -354,7 +354,7 @@
+ 	return 0;
+ }
+ # else 
+-static int dummy()
++static void dummy()
+ {
+ }
+ # endif
+diff -ruN elvis-tiny-1.4.orig/tmp.c elvis-tiny-1.4.test2/tmp.c
+--- elvis-tiny-1.4.orig/tmp.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/tmp.c	2012-06-29 21:58:55.172307677 +0000
+@@ -13,6 +13,9 @@
+ 
+ #include "config.h"
+ #include <ctype.h>
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
+ #include "vi.h"
+ #if TOS
+ # include <stat.h>
+@@ -24,7 +24,7 @@
+ # endif
+ #endif
+ #include <malloc.h>
+-
++#include <string.h>
+ 
+ #ifndef NO_MODELINE
+ static void do_modeline(l, stop)
+diff -ruN elvis-tiny-1.4.orig/cmd1.c elvis-tiny-1.4.test2/cmd1.c
+--- elvis-tiny-1.4.orig/cmd1.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/cmd1.c	2012-06-29 22:04:33.470016427 +0000
+@@ -14,6 +14,8 @@
+ 
+ #include "config.h"
+ #include <ctype.h>
++#include <stdlib.h>
++#include <string.h>
+ #include "vi.h"
+ #include "regexp.h"
+ 
+@@ -270,7 +272,7 @@
+ 	suspend_curses();
+ 	if (frommark == 0L)
+ 	{
+-		system(extra);
++		elvis_system(extra);
+ 	}
+ 	else /* pipe lines from the file through the command */
+ 	{
+diff -ruN elvis-tiny-1.4.orig/cmd2.c elvis-tiny-1.4.test2/cmd2.c
+--- elvis-tiny-1.4.orig/cmd2.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/cmd2.c	2012-06-29 22:05:11.710661704 +0000
+@@ -11,6 +11,9 @@
+ /* This file contains some of the commands - mostly ones that change text */
+ 
+ #include <ctype.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ #include "config.h"
+ #include "vi.h"
+ #include "regexp.h"
+@@ -23,7 +26,7 @@
+ #  include <sys/stat.h>
+ # endif
+ #endif
+-
++#include <string.h>
+ 
+ /*ARGSUSED*/
+ void cmd_substitute(frommark, tomark, cmd, bang, extra)
+diff -ruN elvis-tiny-1.4.orig/config.h elvis-tiny-1.4.test2/config.h
+--- elvis-tiny-1.4.orig/config.h	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/config.h	2012-06-29 21:56:09.341509847 +0000
+@@ -148,7 +148,6 @@
+ #if BSD || UNIX7 || OSK
+ # define strchr	index
+ #endif
+-extern char *strchr();
+ 
+ /* BSD uses bcopy() instead of memcpy() */
+ #if BSD
+@@ -219,6 +211,10 @@
+ # endif
+ #endif
+ 
++#ifndef ANY_UNIX
++#  define elvis_system system
++#endif
++
+ #if MSDOS || TOS
+ /* do not change TMPNAME, CUTNAME and SCRATCH*: they MUST begin with '%s\\'! */
+ # ifndef TMPDIR
+diff -ruN elvis-tiny-1.4.orig/curses.c elvis-tiny-1.4.test2/curses.c
+--- elvis-tiny-1.4.orig/curses.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/curses.c	2012-06-29 21:40:40.521843315 +0000
+@@ -35,6 +35,8 @@
+ #endif
+ 
+ #include <signal.h>
++#include <stdlib.h>
++#include <string.h>
+ 
+ extern char	*getenv();
+ static void	 starttcap();
+diff -ruN elvis-tiny-1.4.orig/cut.c elvis-tiny-1.4.test2/cut.c
+--- elvis-tiny-1.4.orig/cut.c	1991-08-04 21:20:36.000000000 +0000
++++ elvis-tiny-1.4/cut.c	2012-06-29 22:02:36.956050189 +0000
+@@ -20,6 +20,10 @@
+ #define	rename(a,b)	Frename(0,a,b)
+ #endif
+ 
++#include <stdlib.h>
++#include <string.h>
++#include <stdio.h>
++
+ # define NANNONS	9	/* number of annonymous buffers */
+ 
+ static struct cutbuf
+Binary files elvis-tiny-1.4.orig/elvis and elvis-tiny-1.4.test2/elvis differ
+diff -ruN elvis-tiny-1.4.orig/ex.c elvis-tiny-1.4.test2/ex.c
+--- elvis-tiny-1.4.orig/ex.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/ex.c	2012-06-29 21:41:51.715043811 +0000
+@@ -12,6 +12,7 @@
+ 
+ #include "config.h"
+ #include <ctype.h>
++#include <string.h>
+ #include "vi.h"
+ 
+ #ifndef isascii
+diff -ruN elvis-tiny-1.4.orig/input.c elvis-tiny-1.4.test2/input.c
+--- elvis-tiny-1.4.orig/input.c	1991-08-04 21:20:39.000000000 +0000
++++ elvis-tiny-1.4/input.c	2012-06-29 22:01:40.723101264 +0000
+@@ -15,7 +15,7 @@
+ #include <ctype.h>
+ #include "config.h"
+ #include "vi.h"
+-
++#include <string.h>
+ 
+ #ifndef NO_DIGRAPH
+ static struct _DIG
+diff -ruN elvis-tiny-1.4.orig/misc.c elvis-tiny-1.4.test2/misc.c
+--- elvis-tiny-1.4.orig/misc.c	1991-08-04 21:20:40.000000000 +0000
++++ elvis-tiny-1.4/misc.c	2012-06-29 21:44:19.449535042 +0000
+@@ -12,6 +12,7 @@
+ 
+ #include "config.h"
+ #include "vi.h"
++#include <string.h>
+ 
+ 
+ /* find a particular line & return a pointer to a copy of its text */
+diff -ruN elvis-tiny-1.4.orig/modify.c elvis-tiny-1.4.test2/modify.c
+--- elvis-tiny-1.4.orig/modify.c	1991-08-04 21:20:41.000000000 +0000
++++ elvis-tiny-1.4/modify.c	2012-06-29 21:42:08.743330889 +0000
+@@ -8,6 +8,7 @@
+ 
+ #include "config.h"
+ #include "vi.h"
++#include <string.h>
+ 
+ #ifdef DEBUG
+ # include <stdio.h>
+diff -ruN elvis-tiny-1.4.orig/move2.c elvis-tiny-1.4.test2/move2.c
+--- elvis-tiny-1.4.orig/move2.c	1991-08-04 21:20:43.000000000 +0000
++++ elvis-tiny-1.4/move2.c	2012-06-29 21:42:35.279778404 +0000
+@@ -13,6 +13,7 @@
+ #include "config.h"
+ #include "vi.h"
+ #include "regexp.h"
++#include <stdlib.h>
+ 
+ extern long	atol();
+ 
+diff -ruN elvis-tiny-1.4.orig/opts.c elvis-tiny-1.4.test2/opts.c
+--- elvis-tiny-1.4.orig/opts.c	1991-08-04 21:20:46.000000000 +0000
++++ elvis-tiny-1.4/opts.c	2012-06-29 22:01:00.602424228 +0000
+@@ -14,6 +14,8 @@
+ 
+ #include "config.h"
+ #include "vi.h"
++#include <stdio.h>
++#include <string.h>
+ #ifndef NULL
+ #define NULL (char *)0
+ #endif
+diff -ruN elvis-tiny-1.4.orig/regexp.c elvis-tiny-1.4.test2/regexp.c
+--- elvis-tiny-1.4.orig/regexp.c	1991-08-04 21:20:51.000000000 +0000
++++ elvis-tiny-1.4/regexp.c	2012-06-29 21:40:49.137988598 +0000
+@@ -31,6 +31,8 @@
+ 
+ #include <setjmp.h>
+ #include <ctype.h>
++#include <stdlib.h>
++#include <string.h>
+ #include "config.h"
+ #include "vi.h"
+ #include "regexp.h"
+diff -ruN elvis-tiny-1.4.orig/regsub.c elvis-tiny-1.4.test2/regsub.c
+--- elvis-tiny-1.4.orig/regsub.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/regsub.c	2012-06-29 21:41:02.030205985 +0000
+@@ -5,6 +5,8 @@
+  */
+ 
+ #include <ctype.h>
++#include <stdlib.h>
++#include <string.h>
+ #include "config.h"
+ #include "vi.h"
+ #include "regexp.h"
+diff -ruN elvis-tiny-1.4.orig/system.c elvis-tiny-1.4.test2/system.c
+--- elvis-tiny-1.4.orig/system.c	2012-06-29 21:27:00.000000000 +0000
++++ elvis-tiny-1.4/system.c	2012-06-29 22:00:32.609951944 +0000
+@@ -23,14 +23,17 @@
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ extern char	**environ;
+ 
+ #if ANY_UNIX
+ 
+ /* This is a new version of the system() function.  The only difference
+  * between this one and the library one is: this one uses the o_shell option.
+  */
+-int system(cmd)
++int elvis_system(cmd)
+ 	char	*cmd;	/* a command to run */
+ {
+ 	int	status;	/* exit status of the command */
+diff -ruN elvis-tiny-1.4.orig/vcmd.c elvis-tiny-1.4.test2/vcmd.c
+--- elvis-tiny-1.4.orig/vcmd.c	1991-08-04 21:20:58.000000000 +0000
++++ elvis-tiny-1.4/vcmd.c	2012-06-29 21:58:03.495435859 +0000
+@@ -13,6 +13,8 @@
+ 
+ #include "config.h"
+ #include "vi.h"
++#include <string.h>
++#include <stdio.h>
+ #if MSDOS
+ #include <process.h>
+ #include <string.h>
+@@ -627,7 +629,7 @@
+ 	waswarn = *o_warn;
+ 	*o_warn = FALSE;
+ 	suspend_curses();
+-	if (system(cmdline))
++	if (elvis_system(cmdline))
+ 	{
+ 		addstr("<<< failed >>>\n");
+ 	}
+diff -ruN elvis-tiny-1.4.orig/vi.c elvis-tiny-1.4.test2/vi.c
+--- elvis-tiny-1.4.orig/vi.c	1991-08-04 21:21:00.000000000 +0000
++++ elvis-tiny-1.4/vi.c	2012-06-29 21:59:19.628720297 +0000
+@@ -10,6 +10,7 @@
+ 
+ #include "config.h"
+ #include <ctype.h>
++#include <string.h>
+ #include "vi.h"
+ 
+ 
+diff -ruN elvis-tiny-1.4.orig/vi.h elvis-tiny-1.4.test2/vi.h
+--- elvis-tiny-1.4.orig/vi.h	1991-08-04 21:21:02.000000000 +0000
++++ elvis-tiny-1.4/vi.h	2012-06-29 21:57:35.398961810 +0000
+@@ -409,6 +409,9 @@
+ extern void	ex();
+ extern void	vi();
+ extern void	doexcmd();
++#ifndef elvis_system
++extern int	elvis_system();
++#endif
+ 
+ #ifndef NO_ABBR
+ extern void	cmd_abbr();

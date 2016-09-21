@@ -1,0 +1,41 @@
+
+* Use sigaction() instead of signal() for SIGWINCH, and do not set SA_RESTART.
+  This way read() will return -1/EINTR and elvis will resize the screen.
+* Include <sys/ioctl.h> for TIOCGWINSZ
+
+diff -ruN t/elvis-tiny-1.4/curses.c elvis-tiny-1.4/curses.c
+--- t/elvis-tiny-1.4/curses.c	2008-04-30 23:09:50.000000000 +0200
++++ elvis-tiny-1.4/curses.c	2008-04-30 23:28:49.000000000 +0200
+@@ -26,6 +26,10 @@
+ # endif
+ #endif
+ 
++#ifdef __linux__
++#  include	<sys/ioctl.h>
++#endif
++
+ #if TOS
+ # include	<osbind.h>
+ #endif
+@@ -483,13 +487,20 @@
+ {
+ 	int	lines;
+ 	int	cols;
++#ifdef SIGWINCH
++	struct sigaction sa;
++#endif
+ #ifdef TIOCGWINSZ
+ 	struct winsize size;
+ #endif
+ 
+ #ifdef SIGWINCH
+ 	/* reset the signal vector */
+-	signal(SIGWINCH, getsize);
++	if (signo == 0) {
++		memset(&sa, 0, sizeof(sa));
++		sa.sa_handler = getsize;
++		sigaction(SIGWINCH, &sa, 0);
++	}
+ #endif
+ 
+ 	/* get the window size, one way or another. */

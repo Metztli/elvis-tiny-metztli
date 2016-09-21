@@ -1,0 +1,13 @@
+makefile.patch
+argsize.patch
+failsleep.patch
+filesize.patch
+redraw.patch
+termios.patch
+patch-tempfile.diff
+warnings.patch
+patch-substitute-fails.diff
+patch-range-segfault.diff
+patch-bug-258640.diff
+patch-siglongjmp.diff
+patch-fix-resize.diff

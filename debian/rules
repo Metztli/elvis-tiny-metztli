@@ -1,0 +1,43 @@
+#! /usr/bin/make -f
+
+tmp	= $(shell pwd)/debian/elvis-tiny
+tmp1	= $(shell pwd)/debian/elvis-tiny-udeb
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+EXTRA_CFLAGS    = -g
+endif
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	make -f Makefile.mix EXTRA_CFLAGS="$(EXTRA_CFLAGS)"
+	$(CC) $(EXTRA_CFLAGS) -O2 -o wrapper debian/wrapper.c
+
+override_dh_auto_install:
+	install -m 755 -d $(tmp)/bin
+	install -m 755 elvis $(tmp)/bin/elvis-tiny
+	install -m 755 wrapper $(tmp)/bin/vi
+	install -m 755 -d $(tmp1)/bin
+	install -m 755 elvis $(tmp1)/bin/elvis-tiny
+	install -m 755 wrapper $(tmp1)/bin/vi
+
+override_dh_auto_clean:
+	make -f Makefile.mix clobber
+
+override_dh_installchangelogs:
+	dh_installchangelogs debian/changelog.upstream
+
+# We used to strip as much as possible to save a few bytes (it made
+# the vi wrapper fit in a 4K block on i386 - just) but it's probably
+# a bad idea to mess with ELF comments and notes.
+#override_dh_strip:
+#	dh_strip
+#ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+#	strip --remove-section=.comment --remove-section=.note $(tmp)/bin/vi
+#	strip --remove-section=.comment --remove-section=.note $(tmp)/bin/elvis-tiny
+#endif
+
+override_dh_clean:
+	dh_clean
+	rm -f wrapper elvis
+

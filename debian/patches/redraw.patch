@@ -1,0 +1,37 @@
+diff '--exclude=debian' -ruN x/elvis-tiny-1.4.orig/redraw.c elvis-tiny-1.4/redraw.c
+--- x/elvis-tiny-1.4.orig/redraw.c	1991-08-04 21:20:49.000000000 +0000
++++ elvis-tiny-1.4/redraw.c	2012-06-29 17:54:18.000000000 +0000
+@@ -354,7 +354,16 @@
+ 		if (i == '\t' && !*o_list)
+ 		{
+ 			i = col + tabstop - (col % tabstop);
++#if 1
++			/*
++			 *	With modern terminals, autowrap occurs only
++			 *	if a new character is added after limitcol.
++			 *	-- miquels@cistron.nl 23-Jan-2002
++			 */
++			if (i < limitcol || (has_AM && i <= limitcol))
++#else
+ 			if (i < limitcol)
++#endif
+ 			{
+ #ifdef CRUNCH
+ 				if (!clr && has_PT && !((i - leftcol) & 7))
+@@ -450,7 +459,16 @@
+ 		clrtoeol();
+ 	}
+ #endif
++#if 1
++	/*
++	 *	With modern terminals, autowrap occurs only
++	 *	if a new character is added after limitcol.
++	 *	-- miquels@cistron.nl 22-Feb-1998
++	 */
++	if (!has_AM || col <= limitcol)
++#else
+ 	if (!has_AM || col < limitcol)
++#endif
+ 	{
+ 		addch('\n');
+ 	}

@@ -1,0 +1,37 @@
+diff '--exclude=debian' -ruN x/elvis-tiny-1.4.orig/main.c elvis-tiny-1.4/main.c
+--- x/elvis-tiny-1.4.orig/main.c	2012-06-29 19:22:52.702106206 +0000
++++ elvis-tiny-1.4/main.c	2012-06-29 17:54:18.000000000 +0000
+@@ -195,11 +196,29 @@
+ #if ! ( MSDOS || TOS )
+ 		firstarg = argv[i];
+ #endif
+-		strcpy(args, argv[i]);
+-		while (++i < argc && strlen(args) + 1 + strlen(argv[i]) < sizeof args)
++		args[0] = 0;
++		while (i < argc)
+ 		{
+-			strcat(args, " ");
+-			strcat(args, argv[i]);
++			if (strlen(argv[i]) > 128)
++			{
++				msg("file name too long");
++				endmsgs();
++				refresh();
++				sleep(1);
++				endwin();
++				exit(1);
++			}
++			if (strlen(args) + strlen(argv[i]) + 1 >= sizeof(args))
++			{
++				msg("too many files on command line");
++				endmsgs();
++				refresh();
++				sleep(1);
++				endwin();
++				exit(1);
++			}
++			if (args[0]) strcat(args, " ");
++			strcat(args, argv[i++]);
+ 		}
+ 	}
+ #if ! ( MSDOS || TOS )

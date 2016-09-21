@@ -1,0 +1,23 @@
+diff '--exclude=debian' -ruN x/elvis-tiny-1.4.orig/tmp.c elvis-tiny-1.4/tmp.c
+--- x/elvis-tiny-1.4.orig/tmp.c	2012-06-29 19:22:09.285371591 +0000
++++ elvis-tiny-1.4/tmp.c	2012-06-29 17:54:18.000000000 +0000
+@@ -76,7 +76,7 @@
+ 
+ 
+ /* The FAIL() macro prints an error message and then exits. */
+-#define FAIL(why,arg)	mode = MODE_EX; msg(why, arg); endwin(); exit(9)
++#define FAIL(why,arg)	mode = MODE_EX; msg(why, arg); sleep(1); endwin(); exit(9)
+ 
+ /* This is the name of the temp file */
+ static char	tmpname[80];
+diff '--exclude=debian' -ruN x/elvis-tiny-1.4.orig/main.c elvis-tiny-1.4/main.c
+--- x/elvis-tiny-1.4.orig/main.c	2012-06-29 19:22:52.702106206 +0000
++++ elvis-tiny-1.4/main.c	2012-06-29 17:54:18.000000000 +0000
+@@ -124,6 +124,7 @@
+ 			msg("Use the `virec` program to recover lost files");
+ 			endmsgs();
+ 			refresh();
++			sleep(1);
+ 			endwin();
+ 			exit(0);
+ 			break;

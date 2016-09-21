@@ -1,0 +1,59 @@
+
+setjmp/longjmp are used to jump out of signal handlers. That
+causes weirdness. Use sigsetjmp/siglongjmp.
+
+diff -ruN t/elvis-tiny-1.4/main.c elvis-tiny-1.4/main.c
+--- t/elvis-tiny-1.4/main.c	2008-04-30 23:09:50.000000000 +0200
++++ elvis-tiny-1.4/main.c	2008-04-30 22:54:52.000000000 +0200
+@@ -17,7 +17,7 @@
+ 
+ extern		trapint(); /* defined below */
+ extern char	*getenv();
+-jmp_buf		jmpenv;
++sigjmp_buf	jmpenv;
+ 
+ #ifndef NO_DIGRAPH
+ static init_digraphs();
+@@ -307,7 +307,7 @@
+ 	 */
+ 	while (mode != MODE_QUIT)
+ 	{
+-		if (setjmp(jmpenv))
++		if (sigsetjmp(jmpenv, 1))
+ 		{
+ 			/* Maybe we just aborted a change? */
+ 			abortdo();
+@@ -368,7 +368,7 @@
+ #else
+ 	signal(signo, trapint);
+ #endif
+-	longjmp(jmpenv, 1);
++	siglongjmp(jmpenv, 1);
+ 
+ 	return 0;
+ }
+diff -ruN t/elvis-tiny-1.4/tio.c elvis-tiny-1.4/tio.c
+--- t/elvis-tiny-1.4/tio.c	2008-04-30 23:09:50.000000000 +0200
++++ elvis-tiny-1.4/tio.c	2008-04-30 22:54:57.000000000 +0200
+@@ -347,10 +347,10 @@
+ 
+ #if !MSDOS && !TOS
+ # if BSD || COHERENT
+-static jmp_buf env_timeout;
++static sigjmp_buf env_timeout;
+ static int dummy()
+ {
+-	longjmp(env_timeout, 1);
++	siglongjmp(env_timeout, 1);
+ 	return 0;
+ }
+ # else 
+@@ -549,7 +549,7 @@
+ 	while (j > 1)
+ 	{
+ #if BSD || COHERENT
+-		if (setjmp(env_timeout))
++		if (sigsetjmp(env_timeout, 1))
+ 		{
+ 			/* we timed out - assume no mapping */
+ 			j = 0;
