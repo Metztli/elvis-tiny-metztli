@@ -1,9 +1,30 @@
-elvis-tiny (1.4-23.1) UNRELEASED; urgency=medium
+elvis-tiny (1.4-24.2) metztli; urgency=medium
+
+  * ChiNgon-maintainer upload.
+  * Metztli Reiser4 GCC12 / Debian Bookworm backports for AMD64
+  * Generates UDEB additional package for Debian Installer (d-i)
+
+ -- Metztli Information Technology <jose@metztli.it>  Sat, 24 Aug 2024 14:14:01 -0700
+
+elvis-tiny (1.4-24.1) unstable; urgency=medium
 
   * Non-maintainer upload.
-  * Generates UDEB for Debian-Installer (d-i) 
 
- -- Jose R Rodriguez <jose@metztli-it.com>  Fri, 16 Sep 2016 04:21:50 -0700
+  [ Reiner Herrmann ]
+  * Strip build date to enable reproducible building. (Closes: #829755)
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS: Let dh_auto_build pass cross tools to make.
+    (Closes: #901345)
+
+ -- Vagrant Cascadian <vagrant@reproducible-builds.org>  Thu, 06 Oct 2022 14:10:44 -0700
+
+elvis-tiny (1.4-24) unstable; urgency=low
+
+  * remove bin/vi wrapper, incompatible with / + /usr merge (closes: #540928,#813857)
+  * Depends instead of Pre-depends for ${shlibs:Depends} (closes: #827006)
+
+ -- Miquel van Smoorenburg <miquels@debian.org>  Fri, 11 Nov 2016 16:07:17 +0100
 
 elvis-tiny (1.4-23) unstable; urgency=low
 

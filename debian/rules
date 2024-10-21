@@ -7,18 +7,18 @@ EXTRA_CFLAGS    = -g
 endif
 
 %:
-	dh $@
+	dh $@ --buildsystem=makefile
 
 override_dh_auto_build:
-	make -f Makefile.mix EXTRA_CFLAGS="$(EXTRA_CFLAGS)"
+	dh_auto_build -- -f Makefile.mix EXTRA_CFLAGS="$(EXTRA_CFLAGS)"
 	$(CC) $(EXTRA_CFLAGS) -O2 -o wrapper debian/wrapper.c
 
 override_dh_auto_install:
 	install -m 755 -d $(tmp)/bin
 	install -m 755 elvis $(tmp)/bin/elvis-tiny
-	install -m 755 wrapper $(tmp)/bin/vi
 	install -m 755 -d $(tmp1)/bin
 	install -m 755 elvis $(tmp1)/bin/elvis-tiny
+	# Jose/Metztli IT 08-24-2024 leave wrapper for UDEB only
 	install -m 755 wrapper $(tmp1)/bin/vi
 
 override_dh_auto_clean:

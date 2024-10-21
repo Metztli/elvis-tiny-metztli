@@ -11,3 +11,4 @@ patch-range-segfault.diff
 patch-bug-258640.diff
 patch-siglongjmp.diff
 patch-fix-resize.diff
+strip-build-date-to-enable-reproducible-.patch

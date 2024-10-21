@@ -3,20 +3,20 @@ Section: base
 Priority: standard
 Maintainer: Miquel van Smoorenburg <miquels@debian.org>
 Build-Depends: libncurses5-dev, debhelper (>= 8)
-Standards-Version: 3.5.1.0
+Standards-Version: 3.9.6
 
 Package: elvis-tiny-udeb
 XC-Package-Type: udeb
 Section: debian-installer
 Priority: optional
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: elvis-tiny - udeb
- Do not install it on a normal system.
+ UDEB is for Debian Installer (d-i). Do not install it on a normal system.
 
 Package: elvis-tiny
 Architecture: any
-Pre-depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Tiny vi compatible editor for the base system
  Elvis-tiny is based on a 1991 Minix version of elvis. You should install
  another vi-editor (such as "vim", "elvis" or "nvi") if you want a vi

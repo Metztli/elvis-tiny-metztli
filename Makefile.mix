@@ -37,26 +37,26 @@
 #	DOC	name of "doc" directory, with a trailing slash
 
 #---- These settings are recommended for System-V UNIX and SCO XENIX-386 ----
-O=	.o
-E=
-EXTRA=
-EXTRA2=
-LIBS=	-ltermcap
-BIN=	/usr/local/bin
-CFLAGS=	-DM_SYSV -O
-OF=	-o 
-RF=	-c
-DATE=	-DDATE=\'\"`date`\"\'
-EVAL=	eval 
-PROGS=	elvis$E ctags$E ref$E virec$E refont$E
-CHMEM=	
-SORT=	-DSORT
-INST=	inst.unix
-RM=	rm -f
-PR1=	refont -c
-PR2=	| lp
-DUMMY=
-DOC=	doc/
+#O=	.o
+#E=
+#EXTRA=
+#EXTRA2=
+#LIBS=	-ltermcap
+#BIN=	/usr/local/bin
+#CFLAGS=	-DM_SYSV -O
+#OF=	-o 
+#RF=	-c
+#DATE=	-DDATE=\'\"`date`\"\'
+#EVAL=	eval 
+#PROGS=	elvis$E ctags$E ref$E virec$E refont$E
+#CHMEM=	
+#SORT=	-DSORT
+#INST=	inst.unix
+#RM=	rm -f
+#PR1=	refont -c
+#PR2=	| lp
+#DUMMY=
+#DOC=	doc/
 
 #---- These settings are recommended for SCO XENIX-286 ----
 #O=	.o

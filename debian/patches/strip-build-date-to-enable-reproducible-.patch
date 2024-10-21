@@ -1,0 +1,24 @@
+From: Reiner Herrmann <reiner@reiner-h.de>
+Date: Tue, 5 Jul 2016 21:25:37 +0200
+X-Dgit-Generated: 1.4-24.1 a916d656222970d87859c16014646663d51286e1
+Subject: Strip build date to enable reproducible building
+
+(Closes: #829755)
+
+If DATE is not defined, the C file doesn't embed it, so no change is
+required there.
+
+---
+
+diff --git a/Makefile.mix b/Makefile.mix
+index 38f2774..bd7a8d0 100644
+--- a/Makefile.mix
++++ b/Makefile.mix
+@@ -49,7 +49,6 @@ CFLAGS=	-O2 -DM_SYSV -DCRUNCH -DNO_MKEXRC -DNO_CURSORSHAPE -DNO_CHARATTR \
+ 	-fsigned-char $(EXTRA_CFLAGS)
+ OF=	-o 
+ RF=	-c
+-DATE=	-DDATE=\'\"`date`\"\'
+ EVAL=	eval 
+ PROGS=	elvis
+ CHMEM=	
